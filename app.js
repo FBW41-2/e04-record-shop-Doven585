@@ -3,9 +3,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const lowdb = require("lowdb")
 
 /** ROUTERS */
-const indexRouter = require('./routes/index');
+//const apiRouter = require("./routes/api")
+const apiRouter = require('./routes/api');
 const usersRouter = require('./routes/users');
 
 /** INIT */
@@ -23,8 +25,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /** ROUTES */
-app.use('/', indexRouter);
+app.use('/api', apiRouter);
 app.use('/users', usersRouter);
+//url
+// const port =  process.env.PORT || 7090
+// app.listen(port, () => console.log("server started on port:" + port))
+
 
 /** EXPORT PATH */
 module.exports = app;
