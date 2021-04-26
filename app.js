@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const {MongoClient} = require('mongodb');
 
 /** ROUTERS */
 const indexRouter = require('./routes/index');
@@ -20,14 +21,35 @@ const app = express();
 app.use(logger('dev'));
 
 
-/** SETTING UP LOWDB */
-const adapter = new FileSync('data/db.json');
-const db = low(adapter);
-db.defaults({
-    records: [],
-    users: [],
-    orders: []
-}).write();
+
+
+/** CONNECT TO MONGODB **/
+async function connectDB() {                                                    //db name
+    const url = "mongodb+srv://Doven:pJaIvrg2qzObYUZ7@cluster0.htrrm.mongodb.net/record-shop?retryWrites=true&w=majority"
+    const client = new MongoClient(url)
+
+    try {
+        await client.connect()
+        // assign b to global object
+        app.locals.db = client.db("");
+        
+        await listDatabases(client)
+    } catch (error) {
+        console.error(error)
+    }
+    // } finally {
+    //     await client.close()
+    // }
+}
+
+async function listDatabases(client) {
+    databasesList = await client.db().admin().listDatabases();
+ 
+    console.log("Databases:");
+    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+}
+
+connectDB().catch(console.error)
 
 
 /** REQUEST PARSERS */
