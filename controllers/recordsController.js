@@ -1,19 +1,16 @@
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync("data/db.json");
-const db = low(adapter);
-
+const { restart } = require("nodemon");
+const Record = require("../models/Record");
 exports.getRecords = (req, res, next) => {
-  const records = db.get("records").value();
-  res.status(200).send(records);
+  Record.find((err, records) => {
+    if (err) return console.error(err);
+    res.json(records);
+  })
 };
-
 exports.getRecord = (req, res, next) => {
   const { id } = req.params;
   const record = db.get("records").find({ id });
   res.status(200).send(record);
 };
-
 exports.deleteRecord = (req, res, next) => {
   const { id } = req.params;
   const record = db
@@ -22,7 +19,6 @@ exports.deleteRecord = (req, res, next) => {
     .write();
   res.status(200).send(record);
 };
-
 exports.updateRecord = (req, res, next) => {
   const { id } = req.params;
   const dt = req.body;
@@ -33,14 +29,10 @@ exports.updateRecord = (req, res, next) => {
     .write();
   res.status(200).send(record);
 };
-
 exports.addRecord = (req, res, next) => {
   const record = req.body;
-  db.get("records")
-    .push(record)
-    .last()
-    .assign({ id: Date.now().toString() })
-    .write();
-
-  res.status(200).send(record);
+  Record.create(record, (err, result) => {
+    if (err) return console.error(err);
+    res.json(result);
+  })
 };
