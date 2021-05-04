@@ -4,6 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+//const faker = require("faker")
 require("dotenv").config();
  
 /** ROUTERS */
@@ -18,21 +19,20 @@ const app = express();
  
 /** LOGGING */
 app.use(logger("dev"));
- 
+
 /**CONNECT TO DB */
+/**CONNECT TO DB */
+const dbUser = process.env.DB_USER
+const dbPassword = process.env.DB_PASSWORD
+const dbURL = process.env.DB_URL
+const localDbURI = "mongodb://localhost:27017/record-shop"
+const atlasURI = `mongodb+srv://${dbUser}:${dbPassword}@${dbURL}`
 mongoose.connect(
- process.env.NODE_ENV == 'test' ?
- 'mongodb://localhost:27017/record-shop' :
- `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_URL}`,
- {
- useNewUrlParser: true,
- useCreateIndex: true,
- useUnifiedTopology: true
-});
- 
-mongoose.connection.on("error", console.error);
-mongoose.connection.on("open", function() {
- console.log("Database connection established...");
+        process.env.NODE_ENV == 'autograding' ? localDbURI : atlasURI,
+    {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useUnifiedTopology: true
 });
  
 /** REQUEST PARSERS */
