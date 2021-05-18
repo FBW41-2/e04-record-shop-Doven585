@@ -1,25 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const { validateInputs } = require("../middleware/validator");
-const { userValidationRules } = require("../lib/validation/userRules");
-
+// import body func from express validator
+const userValidators = require("../lib/userRules");
+const generateValidator = require("../middleware/validator");
+const bcrypt = require("bcrypt");
 const {
   getUsers,
   getUser,
   updateUser,
   deleteUser,
-  addUser
+  addUser,
+  loginUser
 } = require("../controllers/usersController");
-
 router
   .route("/")
   .get(getUsers)
-  .post(validateInputs(userValidationRules), addUser);
-
-router
-  .route("/:id")
-  .get(getUser)
-  .delete(deleteUser)
-  .put(updateUser);
-
+  // here wanna validate email to check if data is good to go:
+  // take email field from req - check against data schema
+  .post(generateValidator(userValidators), addUser);
+router.route("/:id").get(getUser).delete(deleteUser).put(updateUser);
+// user login route w bcrypt
+router.route("/login").post(loginUser);
 module.exports = router;
