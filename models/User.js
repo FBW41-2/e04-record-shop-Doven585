@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const Address = require("./Address");
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema(
   {
@@ -31,6 +32,12 @@ const UserSchema = new Schema(
     }
   }
 );
+// bcrypt the password
+UserSchema.pre("save", async function (next) {
+  this.password = await bcrypt.hash(this.password, 10);
+  console.log("UserModel", this);
+  next();
+});
 
 UserSchema.virtual("fullName").get(function() {
   return `${this.firstName} ${this.lastName}`;

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // import body func from express validator
-const userValidators = require("../lib/userRules");
+const userValidators = require("../lib/validation/userRules");
 const generateValidator = require("../middleware/validator");
 const bcrypt = require("bcrypt");
 const {
