@@ -15,20 +15,19 @@ const UserSchema = new Schema(
     },
     email: {
       type: String,
+      unique: true,
+      required: true,
+      trim: true,
+      minlength: 1
+    },
+    role: {
+      type: String,
+      enum: ["Admin", "User"],
       required: true
     },
     password: {
       type: String,
       required: true
-    },
-    address: Address
-  },
-  {
-    toObject: {
-      virtuals: true
-    },
-    toJSON: {
-      virtuals: true
     }
   }
 );

@@ -4,6 +4,8 @@ const router = express.Router();
 const userValidators = require("../lib/validation/userRules");
 const generateValidator = require("../middleware/validator");
 const bcrypt = require("bcrypt");
+const auth = require("../middleware/authenticator");
+const checkAdmin = require("../middleware/checkAdminRole")
 const {
   getUsers,
   getUser,
@@ -12,6 +14,12 @@ const {
   addUser,
   loginUser
 } = require("../controllers/usersController");
+router
+  .route("/")
+  .get(auth, getRecords)
+  .post(auth, checkAdmin, addRecord);
+
+module.exports = router;
 router
   .route("/")
   .get(getUsers)
